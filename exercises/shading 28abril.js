@@ -1,18 +1,18 @@
 import * as THREE from  'three';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+import {TeapotGeometry} from '../build/jsm/geometries/TeapotGeometry.js';
 import {initRenderer, 
         initCamera,
         initDefaultBasicLight,
-        setDefaultMaterial,
         InfoBox,
         onWindowResize,
         createGroundPlaneXZ} from "../libs/util/util.js";
+import { ConeGeometry, CylinderGeometry } from '../build/three.module.js';
 
-let scene, renderer, camera, material, light, orbit; // Initial variables
+let scene, renderer, camera, light, orbit; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 15, 30)); // Init camera in this position
-material = setDefaultMaterial(); // create a basic material
 light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
 orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
 
@@ -27,13 +27,24 @@ scene.add( axesHelper );
 let plane = createGroundPlaneXZ(20, 20)
 scene.add(plane);
 
-// create a cube
-let cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
-let cube = new THREE.Mesh(cubeGeometry, material);
-// position the cube
-cube.position.set(0.0, 2.0, 0.0);
-// add the cube to the scene
-scene.add(cube);
+// createTeapot
+
+  let teaPot = new TeapotGeometry(0.5);
+  let material = new THREE.MeshPhongMaterial({color:'red', shininess:"200"});
+    material.side = THREE.DoubleSide;
+  let obj = new THREE.Mesh(teaPot, material);
+    obj.castShadow = true;
+    obj.position.set(2.0, 0.5, 0.0);
+  scene.add(obj);
+
+// createCone
+  let cone = new CylinderGeometry(0.2, 2, 4, 10, 12 );
+  let material1 = new THREE.MeshPhongMaterial({color:'green', shininess:"200"});
+    material1.side = THREE.DoubleSide;
+  let obj1 = new THREE.Mesh(cone, material1);
+    obj1.castShadow = true;
+    obj1.position.set(-2.0, 2, 0.0);
+    scene.add(obj1);
 
 // Use this to show information onscreen
 let controls = new InfoBox();
